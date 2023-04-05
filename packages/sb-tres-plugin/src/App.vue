@@ -1,32 +1,20 @@
 <script setup lang="ts">
+import { SbLoading } from '@storyblok/design-system'
 import { useFieldPlugin } from './useFieldPlugin'
-import ModalToggle from './components/ModalToggle.vue'
-import Counter from './components/Counter.vue'
-import AssetSelector from './components/AssetSelector.vue'
+
+import MaterialPlugin from './components/MaterialPlugin.vue'
 
 const plugin = useFieldPlugin()
 </script>
 
 <template>
   <div>
-    <span v-if="plugin.type === 'loading'">Loading...</span>
+    Awiwi
+    <pre>{{ plugin }}</pre>
+    <span v-if="plugin.type === 'loading'"> Loading </span>
     <span v-else-if="plugin.type === 'error'">Error</span>
-    <div
-      v-else-if="plugin.type === 'loaded'"
-      class="field-plugin"
-    >
-      <ModalToggle
-        :is-modal-open="plugin.data.isModalOpen"
-        :set-modal-open="plugin.actions.setModalOpen"
-      />
-      <Counter
-        :data="plugin.data"
-        :set-value="plugin.actions.setValue"
-      />
-      <AssetSelector
-        :data="plugin.data"
-        :select-asset="plugin.actions.selectAsset"
-      />
+    <div v-else-if="plugin.type === 'loaded'" class="field-plugin pt-4">
+      <!--  <MaterialPlugin :plugin="plugin" /> -->
     </div>
   </div>
 </template>

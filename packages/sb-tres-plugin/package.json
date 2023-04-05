@@ -7,15 +7,24 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "deploy": "undefined --dotEnvPath '../../.env'"
+    "deploy": "npx @storyblok/field-plugin-cli@alpha deploy --token --dotEnvPath '../../.env'"
   },
   "dependencies": {
+    "@iconify-json/ion": "^1.1.9",
+    "@storyblok/design-system": "^3.7.0",
     "@storyblok/field-plugin": "0.0.1-alpha.2",
-    "vue": "^3.2.47"
+    "@tresjs/cientos": "alpha",
+    "@tresjs/core": "alpha",
+    "sass": "^1.60.0",
+    "three": "^0.151.0",
+    "vue": "^3.2.47",
+    "vue-color-kit": "^1.0.5"
   },
   "devDependencies": {
+    "@unocss/transformer-directives": "^0.50.6",
     "@vitejs/plugin-vue": "^4.1.0",
     "typescript": "^4.9.3",
+    "unocss": "^0.50.6",
     "vite": "^4.2.0",
     "vite-plugin-css-injected-by-js": "3.1.0",
     "vue-tsc": "^1.2.0"
