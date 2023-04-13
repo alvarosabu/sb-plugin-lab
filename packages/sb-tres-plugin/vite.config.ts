@@ -14,14 +14,14 @@ export default defineConfig({
       },
     }),
     cssInjectedByJsPlugin(),
-    UnoCSS({})
+    UnoCSS({}),
   ],
   server: {
     port: 8080,
     host: true,
   },
   build: {
-    minify: false,
+    /*  minify: false, */
     rollupOptions: {
       output: {
         entryFileNames: `[name].js`,

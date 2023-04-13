@@ -42,6 +42,9 @@ function addMaterial() {
   state.selectedColor = '#4f4f4f'
   state.roughness = 0.5
   state.metalness = 0.5
+  props.plugin.actions.setValue({
+    availableMaterials: state.availableMaterials,
+  })
 }
 </script>
 <template>
