@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, toRaw } from 'vue'
 import { SbIconButton, SbCard, SbCardHeader, SbCardContent, SbCardFooter, SbButton } from '@storyblok/design-system'
 import { ColorPicker } from 'vue-color-kit'
 import 'vue-color-kit/dist/vue-color-kit.css'
@@ -12,17 +12,28 @@ const props = defineProps<{
 }>()
 
 type Material = {
-  color: number
+  color: string
   metalness: number
   roughness: number
 }
-const state = reactive({
+const formatMaterials = (material: Material) => ({
+  color: material.color,
+  metalness: material.metalness,
+  roughness: material.roughness,
+})
+const state = reactive<{
+  isOpen: boolean
+  selectedColor: string
+  metalness: number
+  roughness: number
+  availableMaterials: Array<Material>
+}>({
   isOpen: false,
   selectedColor: '#4f4f4f',
   metalness: 0.5,
   roughness: 0.5,
   availableMaterials:
-    props.plugin.data?.availableMaterials?.map((material: Material) => ({
+    props.plugin.data?.value?.availableMaterials?.map((material: Material) => ({
       color: material.color,
       metalness: material.metalness,
       roughness: material.roughness,
@@ -33,30 +44,45 @@ function changeColor(color: { hex: string }) {
   state.selectedColor = color.hex
 }
 
+function removeMaterial(material: Material) {
+  state.availableMaterials = state.availableMaterials.filter(item => item !== material)
+  props.plugin.actions.setValue({
+    availableMaterials: toRaw(state.availableMaterials),
+  })
+}
+
 function addMaterial() {
   state.availableMaterials.push({
     color: state.selectedColor,
     metalness: state.metalness,
     roughness: state.roughness,
+    focus: false,
   })
   state.selectedColor = '#4f4f4f'
   state.roughness = 0.5
   state.metalness = 0.5
   props.plugin.actions.setValue({
-    availableMaterials: state.availableMaterials,
+    availableMaterials: toRaw(state.availableMaterials),
   })
 }
 </script>
 <template>
-  <h2 class="text-primary-400">Paints</h2>
-
   <ul class="grid grid-cols-6 mb-4 list-none ml-0 pl-0">
     <li
-      class="relative w-9 h-9 rounded flex"
-      :style="{ backgroundColor: color }"
-      v-for="{ color, metalness } in state.availableMaterials"
+      class="relative w-9 h-9 rounded flex mb-4"
+      :style="{ backgroundColor: material.color }"
+      v-for="material in state.availableMaterials"
+      @mouseenter="() => (material.focus = true)"
+      @mouseleave="() => (material.focus = false)"
+      @click="removeMaterial(material)"
     >
-      <i class="i-ion-sparkles-sharp absolute top-0 right-0 text-yellow" v-show="metalness > 0.5"></i>
+      <i class="i-ion-sparkles-sharp absolute top-0 right-0 text-yellow" v-show="material.metalness > 0.5"></i>
+      <span
+        class="absolute top-0 left-0 bg-black bg-opacity-50 w-full flex h-full items-center justify-center"
+        v-if="material.focus"
+      >
+        <i class="i-ion-close text-white"></i>
+      </span>
     </li>
     <li>
       <SbIconButton
