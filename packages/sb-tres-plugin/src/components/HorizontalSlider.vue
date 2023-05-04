@@ -45,7 +45,7 @@ const sliderEmptyStyle = computed(() => ({
       v-model="value"
       @input="emitValue"
     />
-    <div class="flex justify-between mt-1 text-sm">
+    <div class="flex justify-between mt-1 mb-4 text-xl font-bold text-gray-400">
       <span>{{ min }}</span>
       <span>{{ max }}</span>
     </div>

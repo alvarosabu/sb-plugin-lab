@@ -15,6 +15,7 @@ type Material = {
   color: string
   metalness: number
   roughness: number
+  focus: boolean
 }
 const formatMaterials = (material: Material) => ({
   color: material.color,
@@ -29,7 +30,7 @@ const state = reactive<{
   availableMaterials: Array<Material>
 }>({
   isOpen: false,
-  selectedColor: '#4f4f4f',
+  selectedColor: '#00B3B0',
   metalness: 0.5,
   roughness: 0.5,
   availableMaterials:
@@ -69,14 +70,14 @@ function addMaterial() {
 <template>
   <ul class="grid grid-cols-6 mb-4 list-none ml-0 pl-0">
     <li
-      class="relative w-9 h-9 rounded flex mb-4"
+      class="relative w-14 h-14 rounded flex mb-4"
       :style="{ backgroundColor: material.color }"
       v-for="material in state.availableMaterials"
       @mouseenter="() => (material.focus = true)"
       @mouseleave="() => (material.focus = false)"
       @click="removeMaterial(material)"
     >
-      <i class="i-ion-sparkles-sharp absolute top-0 right-0 text-yellow" v-show="material.metalness > 0.5"></i>
+      <i class="i-ion-sparkles-sharp absolute top-0 right-0 text-yellow text-xl" v-show="material.metalness > 0.5"></i>
       <span
         class="absolute top-0 left-0 bg-black bg-opacity-50 w-full flex h-full items-center justify-center"
         v-if="material.focus"
@@ -84,20 +85,24 @@ function addMaterial() {
         <i class="i-ion-close text-white"></i>
       </span>
     </li>
-    <li>
-      <SbIconButton
-        icon-name="add-block"
-        icon-color="primary"
-        icon-size="small"
-        @click="() => (state.isOpen = !state.isOpen)"
-      />
+    <li class="tada">
+      <SbIconButton icon-name="add-block" icon-color="primary" @click="() => (state.isOpen = !state.isOpen)" />
     </li>
   </ul>
   <SbCard v-show="state.isOpen">
     <SbCardHeader :title="'Add material'" align="left" />
 
-    <SbCardContent style="flex: 1">
-      <ColorPicker class="mb-8" theme="light" :color="'#fff'" @changeColor="changeColor" />
+    <Suspense>
+      <MaterialPreview v-bind="state" />
+    </Suspense>
+
+    <SbCardContent style="flex: 1" class="text-2xl">
+      <ColorPicker
+        class="important-w-92% important-shadow-none important-bg-transparent border-solid border-1 border-gray-200 mb-8"
+        theme="light"
+        :color="state.selectedColor"
+        @changeColor="changeColor"
+      />
 
       <label class="mb-4 font-bold text-primary">Metalness</label>
       <HorizontalSlider class="mb-4" v-model="state.metalness" :min="0" :max="1" :step="0.1" />
@@ -105,9 +110,6 @@ function addMaterial() {
       <label class="mb-4 font-bold text-primary">Roughness</label>
       <HorizontalSlider v-model="state.roughness" :min="0" :max="1" :step="0.1" />
     </SbCardContent>
-    <Suspense>
-      <MaterialPreview v-bind="state" />
-    </Suspense>
 
     <SbCardFooter>
       <SbButton class="mr-4" label="Close" variant="tertiary" size="small" @click="() => (state.isOpen = false)" />
@@ -115,3 +117,8 @@ function addMaterial() {
     </SbCardFooter>
   </SbCard>
 </template>
+
+<style>
+.hu-color-picker {
+}
+</style>
